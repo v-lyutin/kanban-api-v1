@@ -32,8 +32,9 @@ public class TaskManager {
     }
 
     public void updateTask(Task updatedTask) {
-        if (tasks.get(updatedTask.getId()) == null)
+        if (tasks.get(updatedTask.getId()) == null) {
             return;
+        }
 
         tasks.put(updatedTask.getId(), updatedTask);
     }
@@ -53,8 +54,9 @@ public class TaskManager {
     }
 
     public void updateEpic(Epic updatedEpic) {
-        if (epics.get(updatedEpic.getId()) == null)
+        if (epics.get(updatedEpic.getId()) == null) {
             return;
+        }
 
         epics.put(updatedEpic.getId(), updatedEpic);
     }
@@ -71,8 +73,9 @@ public class TaskManager {
         ArrayList<SubTask> epicsSubTasks = new ArrayList<>();
 
         for (SubTask subTask : epic.getSubTasks()) {
-            if (subTasks.containsKey(subTask.getId()))
+            if (subTasks.containsKey(subTask.getId())) {
                 epicsSubTasks.add(subTasks.get(subTask.getId()));
+            }
         }
         return epicsSubTasks;
     }
@@ -97,20 +100,26 @@ public class TaskManager {
         boolean isContainsDoneTasks = false;
 
         for (SubTask subTask : epic.getSubTasks()) {
-            if (subTasks.get(subTask.getId()).getStatus() == Status.NEW)
+            if (subTasks.get(subTask.getId()).getStatus() == Status.NEW) {
                 isContainsNewTasks = true;
-            else if (subTasks.get(subTask.getId()).getStatus() == Status.IN_PROGRESS)
+            }
+            else if (subTasks.get(subTask.getId()).getStatus() == Status.IN_PROGRESS) {
                 isContainsInProgressTasks = true;
-            else if (subTasks.get(subTask.getId()).getStatus() == Status.DONE)
+            }
+            else if (subTasks.get(subTask.getId()).getStatus() == Status.DONE) {
                 isContainsDoneTasks = true;
+            }
         }
 
-        if (isContainsNewTasks && !isContainsInProgressTasks && !isContainsDoneTasks)
+        if (isContainsNewTasks && !isContainsInProgressTasks && !isContainsDoneTasks) {
             epic.setStatus(Status.NEW);
-        else if (!isContainsNewTasks && !isContainsInProgressTasks && isContainsDoneTasks)
+        }
+        else if (!isContainsNewTasks && !isContainsInProgressTasks && isContainsDoneTasks) {
             epic.setStatus(Status.DONE);
-        else
+        }
+        else {
             epic.setStatus(Status.IN_PROGRESS);
+        }
     }
 
     public SubTask createSubTask(SubTask subTask) {
@@ -146,8 +155,9 @@ public class TaskManager {
     }
 
     public SubTask updateSubTask(SubTask updatedSubTask) {
-        if (subTasks.get(updatedSubTask.getId()) == null)
+        if (subTasks.get(updatedSubTask.getId()) == null) {
             return null;
+        }
 
         Epic epic = epics.get(updatedSubTask.getEpicId());
         updateEpicStatus(epic);
