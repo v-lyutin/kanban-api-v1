@@ -69,7 +69,7 @@ public class TaskManager {
         return epics.getOrDefault(id, null);
     }
 
-    public ArrayList<SubTask> getAllEpicsSubTasks(Epic epic) {
+    public ArrayList<SubTask> getEpicsSubTasks(Epic epic) {
         ArrayList<SubTask> epicsSubTasks = new ArrayList<>();
 
         for (SubTask subTask : epic.getSubTasks()) {
@@ -81,12 +81,19 @@ public class TaskManager {
     }
 
     public void removeEpicsSubtasks(Epic epic) {
-        epic.getSubTasks().clear();
+        for (SubTask subTask : epic.getSubTasks()) {
+            subTasks.remove(subTask.getId());
+        }
+
+        epic.removeEpicsSubTasks();
         updateEpicStatus(epic);
     }
 
     public void removeEpic(int id) {
-        epics.remove(id);
+        if (epics.containsKey(id)) {
+            removeEpicsSubtasks(epics.get(id));
+            epics.remove(id);
+        }
     }
 
     private void updateEpicStatus(Epic epic) {
@@ -102,22 +109,18 @@ public class TaskManager {
         for (SubTask subTask : epic.getSubTasks()) {
             if (subTasks.get(subTask.getId()).getStatus() == Status.NEW) {
                 isContainsNewTasks = true;
-            }
-            else if (subTasks.get(subTask.getId()).getStatus() == Status.IN_PROGRESS) {
+            } else if (subTasks.get(subTask.getId()).getStatus() == Status.IN_PROGRESS) {
                 isContainsInProgressTasks = true;
-            }
-            else if (subTasks.get(subTask.getId()).getStatus() == Status.DONE) {
+            } else if (subTasks.get(subTask.getId()).getStatus() == Status.DONE) {
                 isContainsDoneTasks = true;
             }
         }
 
         if (isContainsNewTasks && !isContainsInProgressTasks && !isContainsDoneTasks) {
             epic.setStatus(Status.NEW);
-        }
-        else if (!isContainsNewTasks && !isContainsInProgressTasks && isContainsDoneTasks) {
+        } else if (!isContainsNewTasks && !isContainsInProgressTasks && isContainsDoneTasks) {
             epic.setStatus(Status.DONE);
-        }
-        else {
+        } else {
             epic.setStatus(Status.IN_PROGRESS);
         }
     }
@@ -136,13 +139,16 @@ public class TaskManager {
     public void removeSubTask(SubTask subTask) {
         if (subTasks.containsKey(subTask.getId())) {
             Epic epic = epics.get(subTask.getEpicId());
-            epic.deleteSubtask(subTask);
-            epics.remove(subTask.getId());
+            epic.removeSubtask(subTask);
+            subTasks.remove(subTask.getId());
             updateEpicStatus(epic);
         }
     }
 
     public void removeAllSubTasks() {
+        for (Epic epic : epics.values()) {
+            epic.removeEpicsSubTasks();
+        }
         subTasks.clear();
     }
 

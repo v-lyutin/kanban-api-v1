@@ -11,15 +11,19 @@ public class Epic extends Task {
     }
 
     public ArrayList<SubTask> getSubTasks() {
-        return subTasks;
+        return new ArrayList<>(subTasks);
     }
 
     public void addSubtask(SubTask subTask) {
         subTasks.add(subTask);
     }
 
-    public void deleteSubtask(SubTask subTask) {
+    public void removeSubtask(SubTask subTask) {
         subTasks.remove(subTask);
+    }
+
+    public void removeEpicsSubTasks() {
+        subTasks.clear();
     }
 
     @Override
