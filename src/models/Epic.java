@@ -1,4 +1,4 @@
-package model;
+package models;
 
 import java.util.ArrayList;
 
@@ -32,7 +32,7 @@ public class Epic extends Task {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", status=" + status;
+                ", status=" + taskStatus;
         if (!subTasks.isEmpty())
             result += ", subTasks=" + subTasks + "}";
         else

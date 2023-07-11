@@ -1,15 +1,17 @@
-package model;
+package models;
+
+import utils.TaskStatus;
 
 public class Task {
     protected int id;
     protected String title;
     protected String description;
-    protected Status status;
+    protected TaskStatus taskStatus;
 
     public Task(String title, String description) {
         this.title = title;
         this.description = description;
-        status = Status.NEW;
+        taskStatus = TaskStatus.NEW;
     }
 
     public int getId() {
@@ -20,12 +22,12 @@ public class Task {
         this.id = id;
     }
 
-    public Status getStatus() {
-        return status;
+    public TaskStatus getStatus() {
+        return taskStatus;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setStatus(TaskStatus taskStatus) {
+        this.taskStatus = taskStatus;
     }
 
     public String getTitle() {
@@ -50,7 +52,7 @@ public class Task {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", taskStatus=" + status +
+                ", taskStatus=" + taskStatus +
                 '}';
     }
 }

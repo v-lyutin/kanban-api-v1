@@ -1,4 +1,4 @@
-package model;
+package models;
 
 public class SubTask extends Task {
     private final int epicId;
@@ -18,7 +18,7 @@ public class SubTask extends Task {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", status=" + status +
+                ", status=" + taskStatus +
                 ", epicId=" + epicId +
                 '}';
     }
