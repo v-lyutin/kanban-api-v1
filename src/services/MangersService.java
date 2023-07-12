@@ -7,6 +7,7 @@ import services.task_manager.TaskManager;
 
 public class MangersService {
     private MangersService() {}
+
     public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }
