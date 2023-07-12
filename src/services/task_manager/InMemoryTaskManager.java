@@ -1,12 +1,13 @@
-package managers.task_manager;
+package services.task_manager;
 
-import managers.history_manager.HistoryManager;
+import services.history_manager.HistoryManager;
 import models.Epic;
 import utils.TaskStatus;
 import models.SubTask;
 import models.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private int generatedId = 0;
@@ -43,7 +44,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Task> getAllTasks() {
+    public List<Task> getAllTasks() {
         return new ArrayList<>(tasks.values());
     }
 
@@ -83,7 +84,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Epic> getAllEpics() {
+    public List<Epic> getAllEpics() {
         return new ArrayList<>(epics.values());
     }
 
@@ -97,7 +98,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<SubTask> getEpicsSubTasks(Epic epic) {
+    public List<SubTask> getEpicsSubTasks(Epic epic) {
         ArrayList<SubTask> epicsSubTasks = new ArrayList<>();
 
         for (SubTask subTask : epic.getSubTasks()) {
@@ -187,7 +188,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<SubTask> getAllSubtasks() {
+    public List<SubTask> getAllSubtasks() {
         return new ArrayList<>(subTasks.values());
     }
 

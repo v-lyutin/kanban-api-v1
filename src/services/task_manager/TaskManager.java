@@ -1,17 +1,16 @@
-package managers.task_manager;
+package services.task_manager;
 
 import models.Epic;
 import models.SubTask;
 import models.Task;
-
-import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
     Task createTask(Task task);
 
     Task getTask(int id);
 
-    ArrayList<Task> getAllTasks();
+    List<Task> getAllTasks();
 
     void updateTask(Task updatedTask);
 
@@ -23,11 +22,11 @@ public interface TaskManager {
 
     void updateEpic(Epic updatedEpic);
 
-    ArrayList<Epic> getAllEpics();
+    List<Epic> getAllEpics();
 
     Epic getEpic(int id);
 
-    ArrayList<SubTask> getEpicsSubTasks(Epic epic);
+    List<SubTask> getEpicsSubTasks(Epic epic);
 
     void removeEpicsSubtasks(Epic epic);
 
@@ -39,7 +38,7 @@ public interface TaskManager {
 
     void removeAllSubTasks();
 
-    ArrayList<SubTask> getAllSubtasks();
+    List<SubTask> getAllSubtasks();
 
     SubTask getSubtask(int id);
 
