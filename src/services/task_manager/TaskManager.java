@@ -34,7 +34,7 @@ public interface TaskManager {
 
     SubTask createSubTask(SubTask subTask);
 
-    void removeSubTask(SubTask subTask);
+    void removeSubTask(int id);
 
     void removeAllSubTasks();
 

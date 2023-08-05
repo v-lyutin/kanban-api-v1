@@ -1,6 +1,7 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Epic extends Task {
     private final ArrayList<SubTask> subTasks;
@@ -10,7 +11,7 @@ public class Epic extends Task {
         subTasks = new ArrayList<>();
     }
 
-    public ArrayList<SubTask> getSubTasks() {
+    public List<SubTask> getSubTasks() {
         return new ArrayList<>(subTasks);
     }
 
