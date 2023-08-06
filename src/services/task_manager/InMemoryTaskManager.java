@@ -8,13 +8,14 @@ import models.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
     private int generatedId = 0;
     private final HistoryManager historyManager;
-    private final HashMap<Integer, Task> tasks;
-    private final HashMap<Integer, Epic> epics;
-    private final HashMap<Integer, SubTask> subTasks;
+    private final Map<Integer, Task> tasks;
+    private final Map<Integer, Epic> epics;
+    private final Map<Integer, SubTask> subTasks;
 
     public InMemoryTaskManager(HistoryManager historyManager) {
         tasks = new HashMap<>();
@@ -104,7 +105,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<SubTask> getEpicsSubTasks(Epic epic) {
-        ArrayList<SubTask> epicsSubTasks = new ArrayList<>();
+        List<SubTask> epicsSubTasks = new ArrayList<>();
 
         for (SubTask subTask : epic.getSubTasks()) {
             if (subTasks.containsKey(subTask.getId())) {
