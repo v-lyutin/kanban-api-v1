@@ -1,6 +1,7 @@
 package services.history_manager;
 
 import models.Task;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,15 +24,13 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
-        if (nodes.isEmpty()) {
+        if (nodes.isEmpty() || !nodes.containsKey(id)) {
             return;
         }
 
-        if (nodes.containsKey(id)) {
-            Node current = nodes.get(id);
-            removeNode(current);
-            nodes.remove(id);
-        }
+        Node current = nodes.get(id);
+        removeNode(current);
+        nodes.remove(id);
     }
 
     @Override
