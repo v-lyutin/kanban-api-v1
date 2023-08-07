@@ -6,6 +6,8 @@ import models.Task;
 import java.util.List;
 
 public interface TaskManager {
+    List<Task> getHistory();
+
     Task createTask(Task task);
 
     Task getTask(int id);
