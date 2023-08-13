@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    Node head;
-    Node tail;
-    Map<Integer, Node> nodes = new HashMap<>();
+    private Node head;
+    private Node tail;
+    private final Map<Integer, Node> nodes = new HashMap<>();
 
     @Override
     public void add(Task task) {

@@ -28,7 +28,7 @@ public class Tests {
 
 
         taskManager.getEpic(epic2.getId());
-        System.out.println(historyManager.getHistory());
+        System.out.println(taskManager.getHistory());
         taskManager.getSubtask(subTask3.getId());
         System.out.println(historyManager.getHistory());
         taskManager.getEpic(epic1.getId());
