@@ -1,17 +1,20 @@
 package models;
 
 import utils.TaskStatus;
+import utils.TaskType;
 
 public class Task {
     protected int id;
     protected String title;
     protected String description;
     protected TaskStatus taskStatus;
+    protected TaskType type;
 
     public Task(String title, String description) {
         this.title = title;
         this.description = description;
-        taskStatus = TaskStatus.NEW;
+        this.taskStatus = TaskStatus.NEW;
+        this.type = TaskType.TASK;
     }
 
     public int getId() {
@@ -44,6 +47,10 @@ public class Task {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public TaskType getType() {
+        return type;
     }
 
     @Override

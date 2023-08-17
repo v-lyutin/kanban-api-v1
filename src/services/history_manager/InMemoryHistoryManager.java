@@ -1,7 +1,6 @@
 package services.history_manager;
 
 import models.Task;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

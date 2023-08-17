@@ -3,46 +3,48 @@ package services.task_manager;
 import models.Epic;
 import models.SubTask;
 import models.Task;
+
+import java.io.IOException;
 import java.util.List;
 
 public interface TaskManager {
-    List<Task> getHistory();
+    List<Task> getHistory() throws IOException;
 
-    Task createTask(Task task);
+    Task createTask(Task task) throws IOException;
 
-    Task getTask(int id);
+    Task getTask(int id) throws IOException;
 
     List<Task> getAllTasks();
 
-    void updateTask(Task updatedTask);
+    void updateTask(Task updatedTask) throws IOException;
 
-    void removeAllTasks();
+    void removeAllTasks() throws IOException;
 
-    void removeTask(int id);
+    void removeTask(int id) throws IOException;
 
-    Epic createEpic(Epic epic);
+    Epic createEpic(Epic epic) throws IOException;
 
-    void updateEpic(Epic updatedEpic);
+    void updateEpic(Epic updatedEpic) throws IOException;
 
     List<Epic> getAllEpics();
 
-    Epic getEpic(int id);
+    Epic getEpic(int id) throws IOException;
 
     List<SubTask> getEpicsSubTasks(Epic epic);
 
-    void removeEpicsSubtasks(Epic epic);
+    void removeEpicsSubtasks(Epic epic) throws IOException;
 
-    void removeEpic(int id);
+    void removeEpic(int id) throws IOException;
 
-    SubTask createSubTask(SubTask subTask);
+    SubTask createSubTask(SubTask subTask) throws IOException;
 
-    void removeSubTask(int id);
+    void removeSubTask(int id) throws IOException;
 
-    void removeAllSubTasks();
+    void removeAllSubTasks() throws IOException;
 
     List<SubTask> getAllSubtasks();
 
-    SubTask getSubtask(int id);
+    SubTask getSubtask(int id) throws IOException;
 
-    SubTask updateSubTask(SubTask updatedSubTask);
+    SubTask updateSubTask(SubTask updatedSubTask) throws IOException;
 }
