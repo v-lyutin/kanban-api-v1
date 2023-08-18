@@ -12,7 +12,7 @@ import java.io.File;
 public class Tests {
     public static void main(String[] args) {
         HistoryManager historyManager = ManagersService.getDefaultHistory();
-        FileBackedTasksManager fileManager = FileBackedTasksManager.loadFromFile(new File("src/resources/tasks_history.csv"));
+        FileBackedTasksManager fileManager = FileBackedTasksManager.loadFromFile(new File("src/main/resources/tasks_history.csv"));
         System.out.println(fileManager.getAllEpics());
         System.out.println(fileManager.getHistory());
 //        FileBackedTasksManager fileManager = new FileBackedTasksManager(historyManager);

@@ -14,7 +14,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     private final File fileName;
     public FileBackedTasksManager(HistoryManager historyManager) {
         super(historyManager);
-        this.fileName = new File("src/resources/tasks_history.csv");
+        this.fileName = new File("src/main/resources/tasks_history.csv");
     }
 
     private void save() {
