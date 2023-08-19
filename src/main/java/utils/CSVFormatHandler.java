@@ -34,7 +34,7 @@ public class CSVFormatHandler {
     public static Task fromString(String value) {
         String[] taskContent = value.split(",");
 
-        if (!(validateLength(taskContent.length) && validateType(taskContent[TYPE]) && validateId(taskContent[ID]))) {
+        if (!(validateSize(taskContent.length) && validateType(taskContent[TYPE]) && validateId(taskContent[ID]))) {
             return null;
         }
 
@@ -62,7 +62,7 @@ public class CSVFormatHandler {
         return null;
     }
 
-    private static boolean validateLength(int length) {
+    private static boolean validateSize(int length) {
         return length == MIN_STRING_ARRAY_SIZE || length == MAX_STRING_ARRAY_SIZE;
     }
 
