@@ -40,7 +40,7 @@ public class CSVFormatHandler {
 
         TaskType type = TaskType.valueOf(taskContent[TYPE]);
         switch (type) {
-            case SUBTASK:
+            case SUBTASK: {
                 SubTask subTask = new SubTask(
                         taskContent[NAME],
                         taskContent[DESCRIPTION],
@@ -48,16 +48,19 @@ public class CSVFormatHandler {
                 subTask.setId(Integer.parseInt(taskContent[ID]));
                 subTask.setStatus(TaskStatus.valueOf(taskContent[STATUS]));
                 return subTask;
-            case EPIC:
+            }
+            case EPIC: {
                 Epic epic = new Epic(taskContent[NAME], taskContent[DESCRIPTION]);
                 epic.setId(Integer.parseInt(taskContent[ID]));
                 epic.setStatus(TaskStatus.valueOf(taskContent[STATUS]));
                 return epic;
-            case TASK:
+            }
+            case TASK: {
                 Task task = new Task(taskContent[NAME], taskContent[DESCRIPTION]);
                 task.setId(Integer.parseInt(taskContent[ID]));
                 task.setStatus(TaskStatus.valueOf(taskContent[STATUS]));
                 return task;
+            }
         }
         return null;
     }
