@@ -1,7 +1,4 @@
 id,type,name,status,description,epic_id
 1,TASK,:),NEW,...
-2,EPIC,:0,IN_PROGRESS,...
-3,SUBTASK,...,NEW,...,2
-4,SUBTASK,...,DONE,...,2
 
-2,1
+1

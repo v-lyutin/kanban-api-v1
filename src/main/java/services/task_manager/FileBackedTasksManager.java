@@ -3,7 +3,6 @@ package services.task_manager;
 import models.Epic;
 import models.SubTask;
 import models.Task;
-import services.ManagersService;
 import services.history_manager.HistoryManager;
 import utils.CSVFormatHandler;
 import utils.TaskType;
@@ -52,8 +51,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    public static FileBackedTasksManager loadFromFile(File file) {
-        HistoryManager historyManager = ManagersService.getDefaultHistory();
+    public static FileBackedTasksManager loadFromFile(File file, HistoryManager historyManager) {
         FileBackedTasksManager manager = new FileBackedTasksManager(historyManager);
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -73,21 +71,27 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     continue skip_if_null;
                 }
 
-                if (task.getType() == TaskType.TASK) {
-                    manager.tasks.put(task.getId(), task);
+                TaskType type = task.getType();
+                switch (type) {
+                    case TASK:
+                        manager.tasks.put(task.getId(), task);
+                        manager.generateId();
+                        break;
+                    case SUBTASK:
+                        manager.subTasks.put(task.getId(), (SubTask) task);
+                        manager.generateId();
+                        break;
+                    case EPIC:
+                        manager.epics.put(task.getId(), (Epic) task);
+                        manager.generateId();
+                        break;
                 }
+            }
 
-                if (task.getType() == TaskType.SUBTASK) {
-                    manager.subTasks.put(task.getId(), (SubTask) task);
-
-                    if (manager.epics.containsKey(((SubTask) task).getEpicId())) {
-                        Epic epic = manager.epics.get(((SubTask) task).getEpicId());
-                        epic.addSubtask((SubTask) task);
-                    }
-                }
-
-                if (task.getType() == TaskType.EPIC) {
-                    manager.epics.put(task.getId(), (Epic) task);
+            if (!manager.subTasks.isEmpty()) {
+                for (SubTask subTask : manager.subTasks.values()) {
+                    Epic epic = manager.epics.get(subTask.getEpicId());
+                    epic.addSubtask(subTask);
                 }
             }
 

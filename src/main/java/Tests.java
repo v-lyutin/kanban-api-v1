@@ -13,9 +13,26 @@ import java.io.File;
 public class Tests {
     public static void main(String[] args) {
         HistoryManager historyManager = ManagersService.getDefaultHistory();
-        FileBackedTasksManager fileManager = FileBackedTasksManager.loadFromFile(new File("src/main/resources/tasks_history.csv"));
-        System.out.println(fileManager.getAllEpics());
-        System.out.println(fileManager.getHistory());
+        FileBackedTasksManager fileManager = FileBackedTasksManager.loadFromFile(
+                new File("src/main/resources/tasks_history.csv"),
+                historyManager);
+//
+//        Epic epic3 = new Epic("epic3", "...");
+//        fileManager.createEpic(epic3);
+//
+//        Task task2 = new Task("task2", "...");
+//        fileManager.createTask(task2);
+//
+//        SubTask subTask3 = new SubTask("subTask3", "...", epic3.getId());
+//        fileManager.createSubTask(subTask3);
+//
+//        SubTask subTask8 = fileManager.getSubtask(7);
+//        subTask8.setStatus(TaskStatus.DONE);
+//        fileManager.updateSubTask(subTask8);
+//
+//        System.out.println(fileManager.getAllEpics());
+//        System.out.println(fileManager.getHistory());
+//
 
 //        FileBackedTasksManager fileManager = new FileBackedTasksManager(historyManager);
 //
