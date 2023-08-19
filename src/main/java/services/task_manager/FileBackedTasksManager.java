@@ -7,7 +7,7 @@ import services.history_manager.HistoryManager;
 import utils.CSVFormatHandler;
 import utils.TaskType;
 import java.io.*;
-import java.util.List;
+import java.util.*;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
     private final File fileName;
@@ -57,7 +57,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             reader.readLine();
 
-            skip_if_null:
             while (reader.ready() || !reader.readLine().isEmpty()) {
                 String lineContent = reader.readLine();
 
@@ -66,25 +65,19 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 }
 
                 Task task = CSVFormatHandler.fromString(lineContent);
-
-                if (task == null) {
-                    continue skip_if_null;
-                }
-
-                TaskType type = task.getType();
-                switch (type) {
-                    case TASK:
-                        manager.tasks.put(task.getId(), task);
-                        manager.generateId();
-                        break;
-                    case SUBTASK:
-                        manager.subTasks.put(task.getId(), (SubTask) task);
-                        manager.generateId();
-                        break;
-                    case EPIC:
-                        manager.epics.put(task.getId(), (Epic) task);
-                        manager.generateId();
-                        break;
+                if (task != null) {
+                    TaskType type = task.getType();
+                    switch (type) {
+                        case TASK:
+                            manager.tasks.put(task.getId(), task);
+                            break;
+                        case SUBTASK:
+                            manager.subTasks.put(task.getId(), (SubTask) task);
+                            break;
+                        case EPIC:
+                            manager.epics.put(task.getId(), (Epic) task);
+                            break;
+                    }
                 }
             }
 
@@ -94,6 +87,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     epic.addSubtask(subTask);
                 }
             }
+
+            manager.setGeneratedId(getMaxId(manager));
 
             for (Integer id : CSVFormatHandler.historyFromString(reader.readLine())) {
                 if (manager.tasks.containsKey(id)) {
@@ -114,6 +109,30 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static int getMaxId(FileBackedTasksManager manager) {
+        int maxId = -1;
+
+        if (!manager.tasks.isEmpty()) {
+            for (Integer id : manager.tasks.keySet()) {
+                maxId = Integer.max(maxId, id);
+            }
+        }
+
+        if (!manager.epics.isEmpty()) {
+            for (Integer id : manager.epics.keySet()) {
+                maxId = Integer.max(maxId, id);
+            }
+        }
+
+        if (!manager.subTasks.isEmpty()) {
+            for (Integer id : manager.subTasks.keySet()) {
+                maxId = Integer.max(maxId, id);
+            }
+        }
+
+        return maxId;
     }
 
     @Override

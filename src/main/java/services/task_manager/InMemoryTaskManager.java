@@ -24,6 +24,10 @@ public class InMemoryTaskManager implements TaskManager {
         this.historyManager = historyManager;
     }
 
+    protected void setGeneratedId(int generatedId) {
+        this.generatedId = generatedId;
+    }
+
     protected int generateId() {
         return ++generatedId;
     }

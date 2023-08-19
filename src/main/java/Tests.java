@@ -16,12 +16,17 @@ public class Tests {
         FileBackedTasksManager fileManager = FileBackedTasksManager.loadFromFile(
                 new File("src/main/resources/tasks_history.csv"),
                 historyManager);
-//
-//        Epic epic3 = new Epic("epic3", "...");
-//        fileManager.createEpic(epic3);
+
+        System.out.println(fileManager.getHistory());
+
+        Epic epic5 = new Epic("epic10", "...");
+        fileManager.createEpic(epic5);
 //
 //        Task task2 = new Task("task2", "...");
 //        fileManager.createTask(task2);
+//
+//        Epic epic4 = new Epic("epic4", "...");
+//        fileManager.createEpic(epic4);
 //
 //        SubTask subTask3 = new SubTask("subTask3", "...", epic3.getId());
 //        fileManager.createSubTask(subTask3);

@@ -1,7 +1,6 @@
 package models;
 
 import utils.TaskType;
-
 import java.util.ArrayList;
 import java.util.List;
 
