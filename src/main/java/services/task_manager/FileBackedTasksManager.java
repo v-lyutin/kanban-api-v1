@@ -59,6 +59,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             reader.readLine();
 
+            skip_if_null:
             while (reader.ready() || !reader.readLine().isEmpty()) {
                 String lineContent = reader.readLine();
 
@@ -67,6 +68,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 }
 
                 Task task = CSVFormatHandler.fromString(lineContent);
+
+                if (task == null) {
+                    continue skip_if_null;
+                }
 
                 if (task.getType() == TaskType.TASK) {
                     manager.tasks.put(task.getId(), task);
