@@ -1,4 +1,4 @@
-package services.history_manager;
+package service.history_manager;
 
 import models.Task;
 import java.util.List;

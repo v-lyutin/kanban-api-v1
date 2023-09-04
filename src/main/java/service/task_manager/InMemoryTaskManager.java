@@ -1,6 +1,6 @@
-package services.task_manager;
+package service.task_manager;
 
-import services.history_manager.HistoryManager;
+import service.history_manager.HistoryManager;
 import models.Epic;
 import utils.TaskStatus;
 import models.SubTask;

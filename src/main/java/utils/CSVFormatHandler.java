@@ -3,32 +3,48 @@ package utils;
 import models.Epic;
 import models.SubTask;
 import models.Task;
-import services.history_manager.HistoryManager;
+import service.history_manager.HistoryManager;
+
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CSVFormatHandler {
     private static final byte MIN_STRING_ARRAY_SIZE = 5;
-    private static final byte MAX_STRING_ARRAY_SIZE = 6;
+    private static final byte MAX_STRING_ARRAY_SIZE = 9;
     private static final byte ID = 0;
     private static final byte TYPE = 1;
     private static final byte NAME = 2;
     private static final byte STATUS = 3;
     private static final byte DESCRIPTION = 4;
     private static final byte EPIC_ID = 5;
+    private static final byte START_TIME = 6;
+    private static final byte END_TIME = 7;
+    private static final byte DURATION = 8;
 
     public static String toString(Task task) {
-        String result = String.format("%s,%s,%s,%s,%s",
+        StringBuilder result = new StringBuilder(String.format("%s,%s,%s,%s,%s",
                 task.getId(),
                 task.getType(),
                 task.getTitle(),
                 task.getStatus(),
-                task.getDescription());
+                task.getDescription())
+        );
 
         if (task instanceof SubTask) {
-            return String.format("%s,%s", result, ((SubTask) task).getEpicId());
+            result.append(",").append(((SubTask) task).getEpicId());
         }
-        return result;
+
+        if (task.getStartTime() != null && task.getEndTime() != null && task.getDuration() != null) {
+            result.append(",")
+                    .append(task.getStartTime().format(DateTimeFormatHandler.DEFAULT_DATE_TIME_FORMAT))
+                    .append(",")
+                    .append(task.getEndTime().format(DateTimeFormatHandler.DEFAULT_DATE_TIME_FORMAT))
+                    .append(",")
+                    .append(task.getDuration());
+        }
+
+        return result.toString();
     }
 
     public static Task fromString(String value) {
@@ -41,22 +57,53 @@ public class CSVFormatHandler {
         TaskType type = TaskType.valueOf(taskContent[TYPE]);
         switch (type) {
             case SUBTASK: {
-                SubTask subTask = new SubTask(
-                        taskContent[NAME],
-                        taskContent[DESCRIPTION],
-                        Integer.parseInt(taskContent[EPIC_ID]));
+                SubTask subTask;
+                if (taskContent.length == MAX_STRING_ARRAY_SIZE) {
+                    subTask = new SubTask(
+                            taskContent[NAME],
+                            taskContent[DESCRIPTION],
+                            taskContent[START_TIME],
+                            Duration.parse(taskContent[DURATION]).toMinutes(),
+                            Integer.parseInt(taskContent[EPIC_ID])
+                    );
+                } else {
+                    subTask = new SubTask(
+                            taskContent[NAME],
+                            taskContent[DESCRIPTION],
+                            Integer.parseInt(taskContent[EPIC_ID]));
+                }
                 subTask.setId(Integer.parseInt(taskContent[ID]));
                 subTask.setStatus(TaskStatus.valueOf(taskContent[STATUS]));
                 return subTask;
             }
             case EPIC: {
-                Epic epic = new Epic(taskContent[NAME], taskContent[DESCRIPTION]);
-                epic.setId(Integer.parseInt(taskContent[ID]));
-                epic.setStatus(TaskStatus.valueOf(taskContent[STATUS]));
-                return epic;
+                if (taskContent.length == MAX_STRING_ARRAY_SIZE - 1) {
+                    Epic epic = new Epic(taskContent[NAME], taskContent[DESCRIPTION]);
+                    epic.setId(Integer.parseInt(taskContent[ID]));
+                    epic.setStatus(TaskStatus.valueOf(taskContent[STATUS]));
+                    epic.setStartTime(DateTimeFormatHandler.parseDateFromString(taskContent[START_TIME - 1]));
+                    epic.setEndTime(DateTimeFormatHandler.parseDateFromString(taskContent[END_TIME - 1]));
+                    epic.setDuration(Duration.parse(taskContent[DURATION - 1]));
+                    return epic;
+                } else {
+                    Epic epic = new Epic(taskContent[NAME], taskContent[DESCRIPTION]);
+                    epic.setId(Integer.parseInt(taskContent[ID]));
+                    epic.setStatus(TaskStatus.valueOf(taskContent[STATUS]));
+                    return epic;
+                }
             }
             case TASK: {
-                Task task = new Task(taskContent[NAME], taskContent[DESCRIPTION]);
+                Task task;
+                if (taskContent.length == MAX_STRING_ARRAY_SIZE - 1) {
+                    task = new Task(
+                            taskContent[NAME],
+                            taskContent[DESCRIPTION],
+                            taskContent[START_TIME - 1],
+                            Duration.parse(taskContent[DURATION - 1]).toMinutes()
+                    );
+                } else {
+                    task = new Task(taskContent[NAME], taskContent[DESCRIPTION]);
+                }
                 task.setId(Integer.parseInt(taskContent[ID]));
                 task.setStatus(TaskStatus.valueOf(taskContent[STATUS]));
                 return task;
@@ -66,7 +113,7 @@ public class CSVFormatHandler {
     }
 
     private static boolean validateSize(int length) {
-        return length == MIN_STRING_ARRAY_SIZE || length == MAX_STRING_ARRAY_SIZE;
+        return (length >= MIN_STRING_ARRAY_SIZE && length <= MAX_STRING_ARRAY_SIZE);
     }
 
     private static boolean validateType(String type) {
@@ -104,6 +151,6 @@ public class CSVFormatHandler {
     }
 
     public static String getHeader() {
-        return "id,type,name,status,description,epic_id";
+        return "id,type,name,status,description,epic_id,startTime,endTime,duration";
     }
 }

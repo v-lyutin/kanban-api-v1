@@ -1,5 +1,6 @@
 package models;
 
+import utils.DateTimeFormatHandler;
 import utils.TaskType;
 
 public class SubTask extends Task {
@@ -7,6 +8,12 @@ public class SubTask extends Task {
 
     public SubTask(String title, String description, int epicId) {
         super(title, description);
+        this.epicId = epicId;
+        this.type = TaskType.SUBTASK;
+    }
+
+    public SubTask(String title, String description, String startTime, long duration, int epicId) {
+        super(title, description, startTime, duration);
         this.epicId = epicId;
         this.type = TaskType.SUBTASK;
     }
@@ -22,12 +29,22 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return "SubTask{" +
+        String result = "SubTask{" +
                 "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + taskStatus +
-                ", epicId=" + epicId +
-                '}';
+                ", title='" + title +
+                ", description='" + description +
+                ", taskStatus=" + taskStatus;
+
+        if (startTime != null && endTime != null && duration != null) {
+            result += ", startTime=" + startTime.format(DateTimeFormatHandler.DEFAULT_DATE_TIME_FORMAT) +
+                    ", endTime=" + endTime.format(DateTimeFormatHandler.DEFAULT_DATE_TIME_FORMAT) +
+                    ", duration=" + duration +
+                    ", epicId=" + epicId +
+                    "}";
+        } else {
+            result += ", epicId=" + epicId + "}";
+        }
+
+        return result;
     }
 }

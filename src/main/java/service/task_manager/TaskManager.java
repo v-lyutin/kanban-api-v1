@@ -1,4 +1,4 @@
-package services.task_manager;
+package service.task_manager;
 
 import models.Epic;
 import models.SubTask;

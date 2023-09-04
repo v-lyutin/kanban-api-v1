@@ -1,10 +1,10 @@
-id,type,name,status,description,epic_id
-6,TASK,task2,NEW,...
-600,TASK,:),NEW,...
-2,EPIC,:0,IN_PROGRESS,...
-5,EPIC,epic3,NEW,...
-601,EPIC,epic10,NEW,...
-3,SUBTASK,...,NEW,...,2
-4,SUBTASK,...,DONE,...,2
+id,type,name,status,description,epic_id,startTime,endTime,duration
+1,TASK,task1,NEW,task1 description
+2,TASK,task2,NEW,task2 description,05.09.2023 - 11:00,05.09.2023 - 13:00,PT2H
+3,EPIC,epic1,NEW,epic1 description,16.09.2023 - 13:00,10.09.2024 - 12:00,PT4H
+7,EPIC,epic2,NEW,epic2 description
+4,SUBTASK,subTask2,NEW,subTask2 description,3
+5,SUBTASK,subTask3,NEW,subTask3 description,3,10.09.2024 - 10:00,10.09.2024 - 12:00,PT2H
+6,SUBTASK,subTask4,NEW,subTask4 description,3,16.09.2023 - 13:00,16.09.2023 - 15:00,PT2H
 
 2
