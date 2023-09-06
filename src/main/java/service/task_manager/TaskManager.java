@@ -4,9 +4,12 @@ import models.Epic;
 import models.SubTask;
 import models.Task;
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
     List<Task> getHistory();
+
+    List<Task> getPrioritizedTasks();
 
     Task createTask(Task task);
 

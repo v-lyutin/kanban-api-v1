@@ -36,7 +36,7 @@ public class Task {
     }
 
     public LocalDateTime getStartTime() {
-        return startTime;
+        return startTime == null ? null : startTime;
     }
 
     public Duration getDuration() {
@@ -48,7 +48,7 @@ public class Task {
             return startTime.plus(duration);
         }
 
-        throw new DateTimeFormatException("\n[!] Дата начала выполенения задачи должна быть не раньше текущего времени");
+        return null;
     }
 
     public void setStartTime(LocalDateTime startTime) {

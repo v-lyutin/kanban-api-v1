@@ -1,11 +1,16 @@
 package service.task_manager;
 
+import exceptions.DateTimeFormatException;
+import exceptions.TaskValidateDateTimeException;
 import models.Epic;
 import models.SubTask;
 import models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.DateTimeFormatHandler;
 import utils.TaskStatus;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,6 +33,50 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         assertNotNull(manager.createTask(task2));
         assertEquals(1, task1.getId());
         assertEquals(2, task2.getId());
+    }
+
+    @Test
+    void createTask_validate_whenIsAnIntersectionInTime() {
+        //"Task 3", "Task 3 description", "2023.09.29, 10:00", 120);
+        manager.createTask(task3);
+
+        assertThrows(TaskValidateDateTimeException.class, () ->
+                manager.createTask(new Task("...", "...", "2023.09.29, 09:00", 60)));
+
+        assertThrows(TaskValidateDateTimeException.class, () ->
+                manager.createTask(new Task("...", "...", "2023.09.29, 09:00", 120)));
+        assertThrows(TaskValidateDateTimeException.class, () ->
+                manager.createTask(new Task("...", "...", "2023.09.29, 10:30", 30)));
+        assertThrows(TaskValidateDateTimeException.class, () ->
+                manager.createTask(new Task("...", "...", "2023.09.29, 12:00", 500)));
+    }
+
+    @Test
+    void createTask_validate_whenDateIsEarlierThanCurrentTime() {
+        assertThrows(TaskValidateDateTimeException.class, () ->
+                manager.createTask(new Task("...", "...", "2023.09.01, 10:30", 30)));
+    }
+
+    @Test
+    void createTask_DateTimeFormatException() {
+        assertDoesNotThrow(() -> manager.createTask(
+                new Task("...", "...", "2099-01-01, 10:00", 120)
+        ));
+        assertDoesNotThrow(() -> manager.createTask(
+                new Task("...", "...", "2099.01.02, 10:00", 120)
+        ));
+        assertDoesNotThrow(() -> manager.createTask(
+                new Task("...", "...", "03.01.2099, 10:00", 120)
+        ));
+        assertDoesNotThrow(() -> manager.createTask(
+                new Task("...", "...", "01/04/2099, 10:00", 120)
+        ));
+        assertDoesNotThrow(() -> manager.createTask(
+                new Task("...", "...", "05.01.2099 - 10:00", 120)
+        ));
+        assertThrows(DateTimeFormatException.class, () -> manager.createTask(
+                new Task("...", "...", "2023.11/05, 10:00", 120)
+        ));
     }
 
     @Test
@@ -64,6 +113,58 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         assertNotNull(manager.createSubTask(subTask2));
         assertEquals(1, subTask1.getEpicId());
         assertEquals(1, subTask2.getEpicId());
+    }
+
+    @Test
+    void createSubtask_validate_whenIsAnIntersectionInTime() {
+        manager.createEpic(epic1);
+        subTask3 = new SubTask("Subtask 3", "Subtask 3 description", "2023.09.15, 11:00", 500, epic1.getId());
+        manager.createSubTask(subTask3);
+
+        assertThrows(TaskValidateDateTimeException.class, () ->
+                manager.createSubTask(
+                        new SubTask("...", "...", "2023.09.15, 10:00", 60, epic1.getId())));
+        assertThrows(TaskValidateDateTimeException.class, () ->
+                manager.createSubTask(
+                        new SubTask("...", "...", "2023.09.15, 11:30", 60, epic1.getId())));
+        assertThrows(TaskValidateDateTimeException.class, () ->
+                manager.createSubTask(
+                        new SubTask("...", "...", "2023.09.15, 19:00", 60, epic1.getId())));
+
+    }
+
+    @Test
+    void createSubtask_validate_whenDateIsEarlierThanCurrentTime() {
+        manager.createEpic(epic1);
+        assertThrows(TaskValidateDateTimeException.class, () ->
+                manager.createSubTask(new SubTask("...", "...", "2023.09.01, 10:00", 120,  epic1.getId())));
+    }
+
+    @Test
+    void createSubtask_DateTimeFormatException() {
+        manager.createEpic(epic1);
+
+        assertDoesNotThrow(() -> manager.createSubTask(
+                new SubTask("...", "...", "2023-12-12, 12:12", 120, epic1.getId())
+        ));
+        assertDoesNotThrow(() -> manager.createSubTask(
+                new SubTask("...", "...", "2023.12.13, 12:12", 120, epic1.getId())
+        ));
+        assertDoesNotThrow(() -> manager.createSubTask(
+                new SubTask("...", "...", "14-12-2023, 12:12", 120, epic1.getId())
+        ));
+        assertDoesNotThrow(() -> manager.createSubTask(
+                new SubTask("...", "...", "15.12.2023, 12:12", 120, epic1.getId())
+        ));
+        assertDoesNotThrow(() -> manager.createSubTask(
+                new SubTask("...", "...", "12/16/2023, 12:12", 120, epic1.getId())
+        ));
+        assertDoesNotThrow(() -> manager.createSubTask(
+                new SubTask("...", "...", "17.12.2023 - 12:12", 120, epic1.getId())
+        ));
+        assertThrows(DateTimeFormatException.class, () -> manager.createSubTask(
+                new SubTask("...", "...", "18 января 2023 года, 12:12", 120, epic1.getId())
+        ));
     }
 
     @Test
@@ -428,7 +529,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
     @Test
     void getHistory_whenHistoryIsEmpty() {
-        assertEquals(Collections.emptyList().toArray(), manager.getHistory().toArray());
+        assertEquals(0, manager.getHistory().size());
     }
 
     @Test
@@ -449,5 +550,116 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
         List<Task> expectedHistory = List.of(task2, epic2, subTask1, epic1, task1);
         assertArrayEquals(expectedHistory.toArray(), manager.getHistory().toArray());
+    }
+
+    @Test
+    void getPrioritizedTasks_whenThereIsNoTasks() {
+        assertEquals(0, manager.getPrioritizedTasks().size());
+    }
+
+    @Test
+    void getPrioritizedTasks_whenAllTasksWithDate() {
+        manager.createTask(task3);
+        manager.createTask(task4);
+        manager.createTask(task5);
+        manager.createEpic(epic1);
+        subTask3 = new SubTask("Subtask 3", "Subtask 3 description", "2023.09.15, 11:00", 500, epic1.getId());
+        manager.createSubTask(subTask3);
+        subTask4 = new SubTask("Subtask 4", "Subtask 4 description", "2023.09.15, 06:00", 120, epic1.getId());
+        manager.createSubTask(subTask4);
+        subTask5 = new SubTask("Subtask 5", "Subtask 5 description", "2023.09.20, 11:00", 120, epic1.getId());
+        manager.createSubTask(subTask5);
+
+        List<Task> expectedValue = List.of(task5, task4, subTask4, subTask3, subTask5, task3);
+        assertArrayEquals(expectedValue.toArray(), manager.prioritizedTasks.toArray());
+    }
+
+    @Test
+    void getPrioritizedTasks_whenTasksWithDateAndWithoutDate() {
+        manager.createTask(task1);
+        manager.createTask(task3);
+        manager.createTask(task5);
+        manager.createEpic(epic1);
+        subTask3 = new SubTask("Subtask 3", "Subtask 3 description", "2023.09.15, 11:00", 500, epic1.getId());
+        manager.createSubTask(subTask3);
+        subTask1 = new SubTask("Subtask1", "Description", epic1.getId());
+        manager.createSubTask(subTask1);
+
+        List<Task> expectedValue = List.of(task5, subTask3, task3, task1, subTask1);
+        assertArrayEquals(expectedValue.toArray(), manager.prioritizedTasks.toArray());
+    }
+
+    @Test
+    void getPrioritizedTasks_whenAllTasksWithoutDate() {
+        manager.createTask(task1);
+        manager.createTask(task2);
+        manager.createEpic(epic1);
+        subTask1 = new SubTask("Subtask1", "Description", epic1.getId());
+        manager.createSubTask(subTask1);
+        subTask2 = new SubTask("Subtask2", "Description", epic1.getId());
+        manager.createSubTask(subTask2);
+
+        List<Task> expectedValue = List.of(task1, task2, subTask1, subTask2);
+        assertArrayEquals(expectedValue.toArray(), manager.prioritizedTasks.toArray());
+    }
+
+    @Test
+    void getEndTime_getStartTime_whenTaskDoesntHaveTime() {
+        manager.createTask(task1);
+        assertNull(task1.getEndTime());
+        assertNull(task1.getStartTime());
+    }
+
+    @Test
+    void getEndTime_getStartTime_whenTaskHasTime() {
+        manager.createTask(task3);
+        LocalDateTime expectedStartTime = DateTimeFormatHandler.parseDateFromString("2023.09.29, 10:00");
+        LocalDateTime expectedEndTime = DateTimeFormatHandler.parseDateFromString("29.09.2023 - 12:00");
+        assertEquals(expectedStartTime, task3.getStartTime());
+        assertEquals(expectedEndTime, task3.getEndTime());
+    }
+
+    @Test
+    void getEndTime_getStartTime_whenEpicsSubtasksDoesntHaveTime() {
+        manager.createEpic(epic1);
+        subTask1 = new SubTask("Subtask1", "Description", epic1.getId());
+        manager.createSubTask(subTask1);
+        subTask2 = new SubTask("Subtask2", "Description", epic1.getId());
+        manager.createSubTask(subTask2);
+        assertNull(epic1.getStartTime());
+        assertNull(epic1.getEndTime());
+    }
+
+    @Test
+    void getEndTime_getStartTime_whenEpicsSubtasksHaveTime() {
+        manager.createEpic(epic1);
+        subTask1 = new SubTask("Subtask1", "Description", "2023.10.10, 10:00", 120, epic1.getId());
+        manager.createSubTask(subTask1);
+        subTask2 = new SubTask("Subtask2", "Description", "2023.10.11, 11:00", 120, epic1.getId());
+        manager.createSubTask(subTask2);
+
+        LocalDateTime expectedStartTime = DateTimeFormatHandler.parseDateFromString("2023.10.10, 10:00");
+        LocalDateTime expectedEndTime = DateTimeFormatHandler.parseDateFromString("2023.10.11, 13:00");
+
+        assertEquals(expectedStartTime, epic1.getStartTime());
+        assertEquals(expectedEndTime, epic1.getEndTime());
+    }
+
+   @Test
+   void getDuration_whenEpicDoesntHasTime() {
+        manager.createEpic(epic1);
+        assertNull(epic1.getDuration());
+    }
+
+    @Test
+    void getDuration_whenEpicHasTime() {
+        manager.createEpic(epic1);
+        subTask1 = new SubTask("Subtask1", "Description", "2023.10.10, 10:00", 120, epic1.getId());
+        manager.createSubTask(subTask1);
+        subTask2 = new SubTask("Subtask2", "Description", "2023.10.11, 11:00", 120, epic1.getId());
+        manager.createSubTask(subTask2);
+
+        Duration expectedDuration = Duration.ofMinutes(240);
+        assertEquals(expectedDuration, epic1.getDuration());
     }
 }

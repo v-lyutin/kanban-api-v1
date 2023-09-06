@@ -1,11 +1,12 @@
 package service.task_manager;
 
+import exceptions.TaskValidateDateTimeException;
 import service.history_manager.HistoryManager;
 import models.Epic;
 import utils.TaskStatus;
 import models.SubTask;
 import models.Task;
-
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -14,14 +15,35 @@ public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Task> tasks;
     protected final Map<Integer, Epic> epics;
     protected final Map<Integer, SubTask> subTasks;
+    protected final Set<Task> prioritizedTasks;
+    private final Comparator<Task> comparator = (t1, t2) -> {
+        if (t1 == null || t2 == null) {
+            return 0;
+        }
 
-    protected final Map<Integer, Task> prioritizedTasks = new TreeMap<>();
+        if (t1.getStartTime() != null && t2.getStartTime() != null) {
+            if (t1.getStartTime().isBefore(t2.getStartTime())) {
+                return -1;
+            } else if (t1.getStartTime().isAfter(t2.getStartTime())) {
+                return 1;
+            } else {
+                return 0;
+            }
+        } else if (t1.getStartTime() == null && t2.getStartTime() != null) {
+            return 1;
+        } else if (t1.getStartTime() != null && t2.getStartTime() == null) {
+            return -1;
+        } else {
+            return t1.getId() - t2.getId();
+        }
+    };
 
     public InMemoryTaskManager(HistoryManager historyManager) {
         tasks = new HashMap<>();
         epics = new HashMap<>();
         subTasks = new HashMap<>();
         this.historyManager = historyManager;
+        prioritizedTasks = new TreeSet<>(comparator);
     }
 
     protected void setGeneratedId(int generatedId) {
@@ -30,6 +52,41 @@ public class InMemoryTaskManager implements TaskManager {
 
     protected int generateId() {
         return ++generatedId;
+    }
+
+    @Override
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(prioritizedTasks);
+    }
+
+    private void validate(Task task) {
+        if (task.getStartTime() == null) {
+            return;
+        }
+
+        if (task.getStartTime().isBefore(LocalDateTime.now())) {
+            throw new TaskValidateDateTimeException("[!] Начало задачи не должно быть раньше текущего времени");
+        }
+
+        LocalDateTime startTime = task.getStartTime();
+        LocalDateTime endTime = task.getEndTime();
+
+        Integer result = prioritizedTasks.stream()
+                .filter(t1 -> t1.getStartTime() != null)
+                .map(t1 -> {
+                    if (startTime.isBefore(t1.getStartTime()) && endTime.isBefore(t1.getStartTime())) {
+                        return 0;
+                    } else if (startTime.isAfter(t1.getEndTime()) && endTime.isAfter(t1.getEndTime())) {
+                        return 0;
+                    }
+                    return 1;
+                })
+                .reduce(Integer::sum)
+                .orElse(0);
+
+        if (result > 0) {
+            throw new TaskValidateDateTimeException("[!] Задачи не должны пересекаться по времени");
+        }
     }
 
     @Override
@@ -43,8 +100,11 @@ public class InMemoryTaskManager implements TaskManager {
             return null;
         }
 
+        validate(task);
+
         task.setId(generateId());
         tasks.put(task.getId(), task);
+        prioritizedTasks.add(task);
         return task;
     }
 
@@ -68,7 +128,10 @@ public class InMemoryTaskManager implements TaskManager {
             return null;
         }
 
+        validate(updatedTask);
+
         tasks.put(updatedTask.getId(), updatedTask);
+        prioritizedTasks.add(updatedTask);
 
         return updatedTask;
     }
@@ -77,6 +140,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeAllTasks() {
         for (Task task : tasks.values()) {
             historyManager.remove(task.getId());
+            prioritizedTasks.remove(task);
         }
 
         tasks.clear();
@@ -90,6 +154,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         tasks.remove(id);
         historyManager.remove(id);
+        prioritizedTasks.remove(tasks.get(id));
     }
 
     @Override
@@ -155,6 +220,7 @@ public class InMemoryTaskManager implements TaskManager {
         for (SubTask subTask : epic.getSubTasks()) {
             subTasks.remove(subTask.getId());
             historyManager.remove(subTask.getId());
+            prioritizedTasks.remove(subTask);
         }
 
         epic.removeEpicsSubTasks();
@@ -207,9 +273,12 @@ public class InMemoryTaskManager implements TaskManager {
             return null;
         }
 
+        validate(subTask);
+
         if (epics.containsKey(subTask.getEpicId())) {
             subTask.setId(generateId());
             subTasks.put(subTask.getId(), subTask);
+            prioritizedTasks.add(subTask);
 
             Epic epic = epics.get(subTask.getEpicId());
             epic.addSubtask(subTask);
@@ -231,6 +300,7 @@ public class InMemoryTaskManager implements TaskManager {
             updateEpicStatus(epic);
 
             historyManager.remove(id);
+            prioritizedTasks.remove(subTasks.get(id));
         }
     }
 
@@ -262,10 +332,13 @@ public class InMemoryTaskManager implements TaskManager {
             return null;
         }
 
+        validate(updatedSubTask);
+
         Epic epic = epics.get(updatedSubTask.getEpicId());
         updateEpicStatus(epic);
 
         subTasks.put(updatedSubTask.getId(), updatedSubTask);
+        prioritizedTasks.add(updatedSubTask);
         return updatedSubTask;
     }
 }
