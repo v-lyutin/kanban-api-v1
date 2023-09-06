@@ -6,17 +6,19 @@ import models.Task;
 import service.history_manager.HistoryManager;
 import utils.CSVFormatHandler;
 import utils.TaskType;
+
 import java.io.*;
 import java.util.*;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
     private final File fileName;
+
     public FileBackedTasksManager(HistoryManager historyManager) {
         super(historyManager);
         this.fileName = new File("src/main/resources/tasks_history.csv");
     }
 
-    private void save() {
+    public void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             writer.write(CSVFormatHandler.getHeader());
             writer.newLine();
@@ -79,6 +81,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                             break;
                     }
                 }
+
+                if (!reader.ready()) {
+                    break;
+                }
             }
 
             if (!manager.subTasks.isEmpty()) {
@@ -89,6 +95,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             }
 
             manager.setGeneratedId(getMaxId(manager));
+
+            if (!reader.ready()) {
+                return manager;
+            }
 
             for (Integer id : CSVFormatHandler.historyFromString(reader.readLine())) {
                 if (manager.tasks.containsKey(id)) {
@@ -103,13 +113,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     manager.historyManager.add(manager.subTasks.get(id));
                 }
             }
-
-            return manager;
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return manager;
+    } catch(IOException e) {
+        throw new RuntimeException(e);
     }
+}
 
     private static int getMaxId(FileBackedTasksManager manager) {
         int maxId = -1;
@@ -157,9 +165,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void updateTask(Task updatedTask) {
-        super.updateTask(updatedTask);
+    public Task updateTask(Task updatedTask) {
+        Task task = super.updateTask(updatedTask);
         save();
+        return task;
     }
 
     @Override
@@ -182,9 +191,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void updateEpic(Epic updatedEpic) {
-        super.updateEpic(updatedEpic);
+    public Epic updateEpic(Epic updatedEpic) {
+        Epic epic = super.updateEpic(updatedEpic);
         save();
+        return epic;
     }
 
     @Override
@@ -195,8 +205,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void removeEpicsSubtasks(Epic epic) {
-        super.removeEpicsSubtasks(epic);
+    public void removeEpicsSubtasks(int id) {
+        super.removeEpicsSubtasks(id);
         save();
     }
 

@@ -13,19 +13,24 @@ import java.util.List;
 public class Tests {
     public static void main(String[] args) {
         HistoryManager historyManager = ManagersService.getDefaultHistory();
+
+//
 //        FileBackedTasksManager manager = ManagersService.getDefault(historyManager);
         FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile(
                 new File("src/main/resources/tasks_history.csv"),
                 historyManager);
-
-        System.out.println(manager.getHistory());
+////
+       System.out.println(manager.getHistory());
 
 //        Task task1 = new Task("task1", "task1 description");
 //        manager.createTask(task1);
 //
-//        Task task2 = new Task("task2", "task2 description", "2023.09.05, 11:00", 120);
+//        Task task2 = new Task("task2", "task2 description", "2023.09.15, 11:00", 120);
 //        manager.createTask(task2);
 //
+//        System.out.println(manager.getAllTasks());
+//        System.out.println(manager.getAllTasks());
+
 //        Epic epic1 = new Epic("epic1", "epic1 description");
 //        manager.createEpic(epic1);
 //
@@ -40,9 +45,6 @@ public class Tests {
 //
 //        Epic epic2 = new Epic("epic2", "epic2 description");
 //        manager.createEpic(epic2);
-//
-//
-//        System.out.println(manager.getEpic(epic1.getId()));
     }
 }
 

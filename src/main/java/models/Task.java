@@ -6,6 +6,7 @@ import utils.TaskStatus;
 import utils.TaskType;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Task {
     protected int id;
@@ -96,6 +97,24 @@ public class Task {
 
     public TaskType getType() {
         return type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id && Objects.equals(title, task.title) &&
+                Objects.equals(description, task.description) &&
+                taskStatus == task.taskStatus && type == task.type &&
+                Objects.equals(startTime, task.startTime) &&
+                Objects.equals(endTime, task.endTime) &&
+                Objects.equals(duration, task.duration);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, description, taskStatus, type, startTime, endTime, duration);
     }
 
     @Override
