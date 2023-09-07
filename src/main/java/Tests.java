@@ -5,23 +5,44 @@ import service.ManagersService;
 import service.history_manager.HistoryManager;
 import service.task_manager.FileBackedTasksManager;
 
+import java.io.File;
+import java.time.LocalDateTime;
+import java.util.Objects;
+
 public class Tests {
     public static void main(String[] args) {
-        HistoryManager historyManager = ManagersService.getDefaultHistory();
-        FileBackedTasksManager manager = ManagersService.getDefault(historyManager);
+//        HistoryManager historyManager = ManagersService.getDefaultHistory();
+//        FileBackedTasksManager manager = ManagersService.getDefault(historyManager);
+//
+//        Task task1 = new Task("Task 1", "Task 1 description");
+//        manager.createTask(task1);
+//
+//        Epic epic = new Epic("Epic", "Description");
+//        manager.createEpic(epic);
+//
+//        SubTask subTask1 = new SubTask("Subtask 1", "...", epic.getId());
+//        manager.createSubTask(subTask1);
+//
+//        SubTask subTask2 = new SubTask("Subtask 1", "...", "2023.10.10, 10:00", 120,epic.getId());
+//        manager.createSubTask(subTask2);
+//
+//        SubTask subTask3 = new SubTask("Subtask 1", "...", "2023.12.12, 10:00", 120,epic.getId());
+//        manager.createSubTask(subTask3);
+//
+//        SubTask subTask4 = new SubTask("Subtask 1", "...", "2024.01.01, 10:00", 120,epic.getId());
+//        manager.createSubTask(subTask4);
+//
+//        manager.getSubtask(subTask4.getId());
+//        manager.getTask(task1.getId());
 
-        Epic epic1 = new Epic("...", "...");
-        manager.createEpic(epic1);
-        Task task3 = new Task("Task 3", "Task 3 description", "2023.09.29, 10:00", 120);
-        manager.createTask(task3);
-        Task task5 = new Task("Task 5", "Task 5 description", "2023.09.08, 18:00", 30);
-        manager.createTask(task5);
-        SubTask subTask3 = new SubTask("Subtask 3", "Subtask 3 description", "2023.09.15, 11:00", 500, epic1.getId());
-        manager.createSubTask(subTask3);
-        SubTask subTask4 = new SubTask("Subtask 4", "Subtask 4 description", "2023.09.15, 06:00", 120, epic1.getId());
-        manager.createSubTask(subTask4);
 
-        System.out.println(manager.getPrioritizedTasks());
+
+
+        HistoryManager recoveryHistoryManager = ManagersService.getDefaultHistory();
+        FileBackedTasksManager recoveryManager = FileBackedTasksManager.loadFromFile(
+                new File("src/main/resources/tasks_history.csv"), recoveryHistoryManager);
+        System.out.println(recoveryManager.getAllEpics());
+        System.out.println(recoveryManager.getHistory());
     }
 }
 

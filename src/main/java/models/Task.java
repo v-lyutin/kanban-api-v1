@@ -1,6 +1,5 @@
 package models;
 
-import exceptions.DateTimeFormatException;
 import utils.DateTimeFormatHandler;
 import utils.TaskStatus;
 import utils.TaskType;
@@ -15,7 +14,6 @@ public class Task {
     protected TaskStatus taskStatus;
     protected TaskType type;
     protected LocalDateTime startTime;
-    protected LocalDateTime endTime;
     protected Duration duration;
 
     public Task(String title, String description) {
@@ -30,13 +28,12 @@ public class Task {
         this.description = description;
         this.startTime = DateTimeFormatHandler.parseDateFromString(startTime);
         this.duration = Duration.ofMinutes(duration);
-        this.endTime = getEndTime();
         this.taskStatus = TaskStatus.NEW;
         this.type = TaskType.TASK;
     }
 
     public LocalDateTime getStartTime() {
-        return startTime == null ? null : startTime;
+        return startTime;
     }
 
     public Duration getDuration() {
@@ -44,7 +41,7 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        if ((this.startTime != null) && (this.duration != null) && (!this.startTime.isBefore(LocalDateTime.now()))) {
+        if ((this.startTime != null) && (this.duration != null)) {
             return startTime.plus(duration);
         }
 
@@ -53,10 +50,6 @@ public class Task {
 
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
     }
 
     public void setDuration(Duration duration) {
@@ -108,13 +101,12 @@ public class Task {
                 Objects.equals(description, task.description) &&
                 taskStatus == task.taskStatus && type == task.type &&
                 Objects.equals(startTime, task.startTime) &&
-                Objects.equals(endTime, task.endTime) &&
                 Objects.equals(duration, task.duration);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, taskStatus, type, startTime, endTime, duration);
+        return Objects.hash(id, title, description, taskStatus, type, startTime, duration);
     }
 
     @Override
@@ -125,9 +117,9 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", taskStatus=" + taskStatus;
 
-        if (startTime != null && endTime != null && duration != null) {
+        if (startTime != null && getEndTime() != null && duration != null) {
             result += ", startTime=" + startTime.format(DateTimeFormatHandler.DEFAULT_DATE_TIME_FORMAT) +
-                    ", endTime=" + endTime.format(DateTimeFormatHandler.DEFAULT_DATE_TIME_FORMAT) +
+                    ", endTime=" + getEndTime().format(DateTimeFormatHandler.DEFAULT_DATE_TIME_FORMAT) +
                     ", duration=" + duration +
                     "}";
         } else {

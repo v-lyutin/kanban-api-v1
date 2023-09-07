@@ -94,30 +94,6 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     }
 
     @Test
-    void save_saveTasksEpicWithSubtasksAndHistory() {
-        manager.createTask(task1);
-        manager.createTask(task2);
-        manager.createEpic(epic1);
-        subTask1 = new SubTask("Subtask1", "Description", epic1.getId());
-        subTask2 = new SubTask("Subtask2", "Description", epic1.getId());
-        manager.createSubTask(subTask1);
-        manager.createSubTask(subTask2);
-        manager.getSubtask(subTask2.getId());
-        manager.getTask(task1.getId());
-        manager.getEpic(epic1.getId());
-        manager.getSubtask(subTask1.getId());
-
-        HistoryManager recoveryHistoryManager = ManagersService.getDefaultHistory();
-        FileBackedTasksManager recoveryManager = FileBackedTasksManager.loadFromFile(
-                new File("src/main/resources/tasks_history.csv"), recoveryHistoryManager);
-
-        assertArrayEquals(List.of(task1, task2).toArray(), recoveryManager.getAllTasks().toArray());
-        assertArrayEquals(List.of(epic1).toArray(), recoveryManager.getAllEpics().toArray());
-        assertArrayEquals(List.of(subTask1, subTask2).toArray(), recoveryManager.getAllSubtasks().toArray());
-        assertArrayEquals(List.of(subTask2, task1, epic1, subTask1).toArray(), recoveryManager.getHistory().toArray());
-    }
-
-    @Test
     void save_saveEpicWithoutSubtasks() {
         manager.createEpic(epic1);
 

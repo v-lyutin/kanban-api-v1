@@ -23,11 +23,6 @@ public class SubTask extends Task {
     }
 
     @Override
-    public TaskType getType() {
-        return TaskType.SUBTASK;
-    }
-
-    @Override
     public String toString() {
         String result = "SubTask{" +
                 "id=" + id +
@@ -35,9 +30,9 @@ public class SubTask extends Task {
                 ", description='" + description +
                 ", taskStatus=" + taskStatus;
 
-        if (startTime != null && endTime != null && duration != null) {
+        if (startTime != null && getEndTime() != null && duration != null) {
             result += ", startTime=" + startTime.format(DateTimeFormatHandler.DEFAULT_DATE_TIME_FORMAT) +
-                    ", endTime=" + endTime.format(DateTimeFormatHandler.DEFAULT_DATE_TIME_FORMAT) +
+                    ", endTime=" + getEndTime().format(DateTimeFormatHandler.DEFAULT_DATE_TIME_FORMAT) +
                     ", duration=" + duration +
                     ", epicId=" + epicId +
                     "}";
