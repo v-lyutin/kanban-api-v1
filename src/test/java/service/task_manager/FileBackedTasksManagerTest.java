@@ -1,6 +1,7 @@
 package service.task_manager;
 
 import models.SubTask;
+import models.Task;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -71,6 +72,25 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         assertArrayEquals(List.of(task1, task2).toArray(), recoveryManager.getAllTasks().toArray());
         assertArrayEquals(List.of(epic1).toArray(), recoveryManager.getAllEpics().toArray());
         assertArrayEquals(List.of(task2).toArray(), recoveryManager.getHistory().toArray());
+    }
+
+    @Test
+    void loadFromFile_checkPrioritizedTasks() {
+        manager.createTask(task1);
+        manager.createTask(task3);
+        manager.createTask(task5);
+        manager.createEpic(epic1);
+        subTask3 = new SubTask("Subtask 3", "Subtask 3 description", "2023.09.15, 11:00", 500, epic1.getId());
+        manager.createSubTask(subTask3);
+        subTask4 = new SubTask("Subtask 4", "Subtask 4 description", "2023.09.15, 06:00", 120, epic1.getId());
+        manager.createSubTask(subTask4);
+
+        HistoryManager recoveryHistoryManager = ManagersService.getDefaultHistory();
+        FileBackedTasksManager recoveryManager = FileBackedTasksManager.loadFromFile(
+                new File("src/main/resources/tasks_history.csv"), recoveryHistoryManager);
+
+        List<Task> expectedPrioritizedTasks = List.of(task5, subTask4, subTask3, task3, task1);
+        assertArrayEquals(expectedPrioritizedTasks.toArray(), recoveryManager.getPrioritizedTasks().toArray());
     }
 
     @Test

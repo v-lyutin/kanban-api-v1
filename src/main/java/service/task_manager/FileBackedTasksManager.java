@@ -70,12 +70,16 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 if (task != null) {
                     TaskType type = task.getType();
                     switch (type) {
-                        case TASK:
+                        case TASK: {
                             manager.tasks.put(task.getId(), task);
+                            manager.prioritizedTasks.add(task);
                             break;
-                        case SUBTASK:
+                        }
+                        case SUBTASK: {
                             manager.subTasks.put(task.getId(), (SubTask) task);
+                            manager.prioritizedTasks.add(task);
                             break;
+                        }
                         case EPIC:
                             manager.epics.put(task.getId(), (Epic) task);
                             break;
