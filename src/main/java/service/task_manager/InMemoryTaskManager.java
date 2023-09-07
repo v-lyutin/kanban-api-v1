@@ -71,20 +71,14 @@ public class InMemoryTaskManager implements TaskManager {
         LocalDateTime startTime = task.getStartTime();
         LocalDateTime endTime = task.getEndTime();
 
-        Integer result = prioritizedTasks.stream()
+        boolean isThereAnIntersectionInTime = prioritizedTasks.stream()
                 .filter(t1 -> t1.getStartTime() != null)
-                .map(t1 -> {
-                    if (startTime.isBefore(t1.getStartTime()) && endTime.isBefore(t1.getStartTime())) {
-                        return 0;
-                    } else if (startTime.isAfter(t1.getEndTime()) && endTime.isAfter(t1.getEndTime())) {
-                        return 0;
-                    }
-                    return 1;
-                })
-                .reduce(Integer::sum)
-                .orElse(0);
+                .allMatch(t1 ->
+                        startTime.isBefore(t1.getStartTime()) && endTime.isBefore(t1.getStartTime()) ||
+                        startTime.isAfter(t1.getEndTime()) && endTime.isAfter(t1.getEndTime()));
 
-        if (result > 0) {
+
+        if (!isThereAnIntersectionInTime) {
             throw new TaskValidateDateTimeException("[!] Задачи не должны пересекаться по времени");
         }
     }
