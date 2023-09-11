@@ -41,14 +41,14 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         manager.createTask(task3);
 
         assertThrows(TaskValidateDateTimeException.class, () ->
-                manager.createTask(new Task("...", "...", "2023.09.29, 09:00", 60)));
+                manager.createTask(new Task("...", "...", "2024.09.29, 09:00", 60)));
 
         assertThrows(TaskValidateDateTimeException.class, () ->
-                manager.createTask(new Task("...", "...", "2023.09.29, 09:00", 120)));
+                manager.createTask(new Task("...", "...", "2024.09.29, 09:00", 120)));
         assertThrows(TaskValidateDateTimeException.class, () ->
-                manager.createTask(new Task("...", "...", "2023.09.29, 10:30", 30)));
+                manager.createTask(new Task("...", "...", "2024.09.29, 10:30", 30)));
         assertThrows(TaskValidateDateTimeException.class, () ->
-                manager.createTask(new Task("...", "...", "2023.09.29, 12:00", 500)));
+                manager.createTask(new Task("...", "...", "2024.09.29, 12:00", 500)));
     }
 
     @Test
@@ -563,11 +563,11 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         manager.createTask(task4);
         manager.createTask(task5);
         manager.createEpic(epic1);
-        subTask3 = new SubTask("Subtask 3", "Subtask 3 description", "2023.09.15, 11:00", 500, epic1.getId());
+        subTask3 = new SubTask("Subtask 3", "Subtask 3 description", "2024.09.15, 11:00", 500, epic1.getId());
         manager.createSubTask(subTask3);
-        subTask4 = new SubTask("Subtask 4", "Subtask 4 description", "2023.09.15, 06:00", 120, epic1.getId());
+        subTask4 = new SubTask("Subtask 4", "Subtask 4 description", "2024.09.15, 06:00", 120, epic1.getId());
         manager.createSubTask(subTask4);
-        subTask5 = new SubTask("Subtask 5", "Subtask 5 description", "2023.09.20, 11:00", 120, epic1.getId());
+        subTask5 = new SubTask("Subtask 5", "Subtask 5 description", "2024.09.20, 11:00", 120, epic1.getId());
         manager.createSubTask(subTask5);
 
         List<Task> expectedValue = List.of(task5, task4, subTask4, subTask3, subTask5, task3);
@@ -580,7 +580,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         manager.createTask(task3);
         manager.createTask(task5);
         manager.createEpic(epic1);
-        subTask3 = new SubTask("Subtask 3", "Subtask 3 description", "2023.09.15, 11:00", 500, epic1.getId());
+        subTask3 = new SubTask("Subtask 3", "Subtask 3 description", "2024.09.15, 11:00", 500, epic1.getId());
         manager.createSubTask(subTask3);
         subTask1 = new SubTask("Subtask1", "Description", epic1.getId());
         manager.createSubTask(subTask1);
@@ -613,8 +613,8 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     @Test
     void getEndTime_getStartTime_whenTaskHasTime() {
         manager.createTask(task3);
-        LocalDateTime expectedStartTime = DateTimeFormatHandler.parseDateFromString("2023.09.29, 10:00");
-        LocalDateTime expectedEndTime = DateTimeFormatHandler.parseDateFromString("29.09.2023 - 12:00");
+        LocalDateTime expectedStartTime = DateTimeFormatHandler.parseDateFromString("2024.09.29, 10:00");
+        LocalDateTime expectedEndTime = DateTimeFormatHandler.parseDateFromString("29.09.2024 - 12:00");
         assertEquals(expectedStartTime, task3.getStartTime());
         assertEquals(expectedEndTime, task3.getEndTime());
     }

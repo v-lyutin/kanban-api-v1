@@ -80,9 +80,9 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         manager.createTask(task3);
         manager.createTask(task5);
         manager.createEpic(epic1);
-        subTask3 = new SubTask("Subtask 3", "Subtask 3 description", "2023.09.15, 11:00", 500, epic1.getId());
+        subTask3 = new SubTask("Subtask 3", "Subtask 3 description", "2024.09.15, 11:00", 500, epic1.getId());
         manager.createSubTask(subTask3);
-        subTask4 = new SubTask("Subtask 4", "Subtask 4 description", "2023.09.15, 06:00", 120, epic1.getId());
+        subTask4 = new SubTask("Subtask 4", "Subtask 4 description", "2024.09.15, 06:00", 120, epic1.getId());
         manager.createSubTask(subTask4);
 
         HistoryManager recoveryHistoryManager = ManagersService.getDefaultHistory();
