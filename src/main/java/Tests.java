@@ -11,38 +11,29 @@ import java.util.Objects;
 
 public class Tests {
     public static void main(String[] args) {
-//        HistoryManager historyManager = ManagersService.getDefaultHistory();
-//        FileBackedTasksManager manager = ManagersService.getDefault(historyManager);
-//
-//        Task task1 = new Task("Task 1", "Task 1 description");
-//        manager.createTask(task1);
-//
-//        Epic epic = new Epic("Epic", "Description");
-//        manager.createEpic(epic);
-//
-//        SubTask subTask1 = new SubTask("Subtask 1", "...", epic.getId());
-//        manager.createSubTask(subTask1);
-//
-//        SubTask subTask2 = new SubTask("Subtask 1", "...", "2023.10.10, 10:00", 120,epic.getId());
-//        manager.createSubTask(subTask2);
-//
-//        SubTask subTask3 = new SubTask("Subtask 1", "...", "2023.12.12, 10:00", 120,epic.getId());
-//        manager.createSubTask(subTask3);
-//
-//        SubTask subTask4 = new SubTask("Subtask 1", "...", "2024.01.01, 10:00", 120,epic.getId());
-//        manager.createSubTask(subTask4);
-//
-//        manager.getSubtask(subTask4.getId());
-//        manager.getTask(task1.getId());
+        HistoryManager historyManager = ManagersService.getDefaultHistory();
+        FileBackedTasksManager manager = ManagersService.getDefault(historyManager);
 
+        Task task1 = new Task("Task 1", "Task 1 description");
+        manager.createTask(task1);
 
+        Epic epic = new Epic("Epic", "Description");
+        manager.createEpic(epic);
 
+        SubTask subTask1 = new SubTask("Subtask 1", "...", epic.getId());
+        manager.createSubTask(subTask1);
 
-        HistoryManager recoveryHistoryManager = ManagersService.getDefaultHistory();
-        FileBackedTasksManager recoveryManager = FileBackedTasksManager.loadFromFile(
-                new File("src/main/resources/tasks_history.csv"), recoveryHistoryManager);
-        System.out.println(recoveryManager.getAllEpics());
-        System.out.println(recoveryManager.getHistory());
+        SubTask subTask2 = new SubTask("Subtask 1", "...", "2025.10.10, 10:00", 120,epic.getId());
+        manager.createSubTask(subTask2);
+
+        SubTask subTask3 = new SubTask("Subtask 1", "...", "2023.12.12, 10:00", 120,epic.getId());
+        manager.createSubTask(subTask3);
+
+        SubTask subTask4 = new SubTask("Subtask 1", "...", "2024.01.01, 10:00", 120,epic.getId());
+        manager.createSubTask(subTask4);
+
+        manager.getSubtask(subTask4.getId());
+        manager.getTask(task1.getId());
     }
 }
 

@@ -5,7 +5,6 @@ import utils.TaskType;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class Epic extends Task {
     private final List<SubTask> subTasks;
@@ -24,10 +23,7 @@ public class Epic extends Task {
 
     @Override
     public LocalDateTime getEndTime() {
-        return getSubTasks().stream()
-                .map(Task::getEndTime)
-                .filter(Objects::nonNull)
-                .max(LocalDateTime::compareTo).orElse(null);
+        return endTime;
     }
 
     public List<SubTask> getSubTasks() {
