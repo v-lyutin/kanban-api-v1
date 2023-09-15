@@ -118,18 +118,18 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     @Test
     void createSubtask_validate_whenIsAnIntersectionInTime() {
         manager.createEpic(epic1);
-        subTask3 = new SubTask("Subtask 3", "Subtask 3 description", "2023.09.15, 11:00", 500, epic1.getId());
+        subTask3 = new SubTask("Subtask 3", "Subtask 3 description", "2025.09.15, 11:00", 500, epic1.getId());
         manager.createSubTask(subTask3);
 
         assertThrows(TaskValidateDateTimeException.class, () ->
                 manager.createSubTask(
-                        new SubTask("...", "...", "2023.09.15, 10:00", 60, epic1.getId())));
+                        new SubTask("...", "...", "2025.09.15, 10:00", 60, epic1.getId())));
         assertThrows(TaskValidateDateTimeException.class, () ->
                 manager.createSubTask(
-                        new SubTask("...", "...", "2023.09.15, 11:30", 60, epic1.getId())));
+                        new SubTask("...", "...", "2025.09.15, 11:30", 60, epic1.getId())));
         assertThrows(TaskValidateDateTimeException.class, () ->
                 manager.createSubTask(
-                        new SubTask("...", "...", "2023.09.15, 19:00", 60, epic1.getId())));
+                        new SubTask("...", "...", "2025.09.15, 19:00", 60, epic1.getId())));
 
     }
 
@@ -512,7 +512,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
     @Test
     void removeEpicsSubtasks_whenEpicHasWrongId() {
-        assertDoesNotThrow(() -> manager.removeEpicsSubtasks(666));
+        assertDoesNotThrow(() -> manager.removeEpicSubtasks(666));
     }
 
     @Test
@@ -522,7 +522,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         subTask2 = new SubTask("Subtask2", "Description", epic1.getId());
         manager.createSubTask(subTask1);
         manager.createSubTask(subTask2);
-        manager.removeEpicsSubtasks(epic1.getId());
+        manager.removeEpicSubtasks(epic1.getId());
 
         assertArrayEquals(Collections.emptyList().toArray(), manager.getEpicsSubTasks(epic1.getId()).toArray());
     }

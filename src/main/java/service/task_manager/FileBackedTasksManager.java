@@ -209,8 +209,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void removeEpicsSubtasks(int id) {
-        super.removeEpicsSubtasks(id);
+    public void removeEpicSubtasks(int id) {
+        super.removeEpicSubtasks(id);
         save();
     }
 

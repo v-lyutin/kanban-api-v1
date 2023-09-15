@@ -205,7 +205,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void removeEpicsSubtasks(int id) {
+    public void removeEpicSubtasks(int id) {
         if (!epics.containsKey(id)) {
             return;
         }
@@ -226,7 +226,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeEpic(int id) {
         if (epics.containsKey(id)) {
-            removeEpicsSubtasks(id);
+            removeEpicSubtasks(id);
             epics.remove(id);
 
             historyManager.remove(id);

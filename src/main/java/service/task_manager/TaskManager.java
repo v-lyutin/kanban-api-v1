@@ -4,7 +4,6 @@ import models.Epic;
 import models.SubTask;
 import models.Task;
 import java.util.List;
-import java.util.Set;
 
 public interface TaskManager {
     List<Task> getHistory();
@@ -33,7 +32,7 @@ public interface TaskManager {
 
     List<SubTask> getEpicsSubTasks(int id);
 
-    void removeEpicsSubtasks(int id);
+    void removeEpicSubtasks(int id);
 
     void removeEpic(int id);
 
