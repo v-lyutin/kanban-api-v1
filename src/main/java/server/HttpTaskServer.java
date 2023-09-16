@@ -2,8 +2,6 @@ package server;
 
 import com.sun.net.httpserver.HttpServer;
 import service.ManagersService;
-import service.task_manager.FileBackedTasksManager;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
@@ -14,7 +12,7 @@ public class HttpTaskServer {
     public HttpTaskServer() throws IOException {
         server = HttpServer.create(new InetSocketAddress(PORT), 0);
         server.createContext("/tasks",
-                new TaskHandler(ManagersService.getDefault(ManagersService.getDefaultHistory())));
+                new TaskHandler(ManagersService.getHttpManager(ManagersService.getDefaultHistory())));
     }
 
     public void start() {

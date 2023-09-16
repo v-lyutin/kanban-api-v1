@@ -18,7 +18,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         this.fileName = new File("src/main/resources/tasks_history.csv");
     }
 
-    public void save() {
+    protected void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             writer.write(CSVFormatHandler.getHeader());
             writer.newLine();
@@ -123,7 +123,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 }
 
-    private static int getMaxId(FileBackedTasksManager manager) {
+    protected static int getMaxId(FileBackedTasksManager manager) {
         int maxId = -1;
 
         if (!manager.tasks.isEmpty()) {
