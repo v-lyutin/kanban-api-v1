@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 public class TaskHandler implements HttpHandler {
     private final TaskManager manager;
-    Gson gson = new Gson();
+    private final Gson gson = new Gson();
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
 
@@ -31,7 +31,7 @@ public class TaskHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         String path = exchange.getRequestURI().toString();
         String method = exchange.getRequestMethod();
-        Endpoint endpoint = getEndpoint(path, method);
+        Endpoint endpoint = Endpoint.getEndpoint(path, method);
 
         switch (endpoint) {
             case GET_PRIORITIZED_TASKS: {
@@ -123,78 +123,6 @@ public class TaskHandler implements HttpHandler {
                 writeResponse(exchange, response, 405);
             }
         }
-    }
-
-    private Endpoint getEndpoint(String requestPath, String requestMethod) {
-        switch (requestMethod) {
-            case "GET": {
-                if (Pattern.matches("^/tasks/$", requestPath)) {
-                    return Endpoint.GET_PRIORITIZED_TASKS;
-                }
-                if (Pattern.matches("^/tasks/history/$", requestPath)) {
-                    return Endpoint.GET_HISTORY;
-                }
-                if (Pattern.matches("^/tasks/task/$", requestPath)) {
-                    return Endpoint.GET_TASKS;
-                } else if (Pattern.matches("^/tasks/task/\\?id=\\d+$", requestPath)) {
-                    return Endpoint.GET_TASK_BY_ID;
-                }
-                if (Pattern.matches("^/tasks/subtask/$", requestPath)) {
-                    return Endpoint.GET_SUBTASKS;
-                } else if (Pattern.matches("^/tasks/subtask/\\?id=\\d+$", requestPath)) {
-                    return Endpoint.GET_SUBTASK_BY_ID;
-                }
-                if (Pattern.matches("^/tasks/epic/$", requestPath)) {
-                    return Endpoint.GET_EPICS;
-                } else if (Pattern.matches("^/tasks/epic/\\?id=\\d+$", requestPath)) {
-                    return Endpoint.GET_EPIC_BY_ID;
-                }
-                if (Pattern.matches("^/tasks/subtask/epic/\\?id=\\d+$", requestPath)) {
-                    return Endpoint.GET_EPIC_SUBTASKS;
-                }
-                break;
-            }
-            case "POST": {
-                if (Pattern.matches("^/tasks/task/$", requestPath)) {
-                    return Endpoint.ADD_TASK;
-                } else if (Pattern.matches("^/tasks/task/\\?id=\\d+$", requestPath)) {
-                    return Endpoint.UPDATE_TASK;
-                }
-                if (Pattern.matches("^/tasks/subtask/$", requestPath)) {
-                    return Endpoint.ADD_SUBTASK;
-                } else if (Pattern.matches("^/tasks/subtask/\\?id=\\d+$", requestPath)) {
-                    return Endpoint.UPDATE_SUBTASK;
-                }
-                if (Pattern.matches("^/tasks/epic/$", requestPath)) {
-                    return Endpoint.ADD_EPIC;
-                } else if (Pattern.matches("^/tasks/epic/\\?id=\\d+$", requestPath)) {
-                    return Endpoint.UPDATE_EPIC;
-                }
-                break;
-            }
-            case "DELETE": {
-                if (Pattern.matches("^/tasks/task/$", requestPath)) {
-                    return Endpoint.DELETE_ALL_TASKS;
-                } else if (Pattern.matches("^/tasks/task/\\?id=\\d+$", requestPath)) {
-                    return Endpoint.DELETE_TASK_BY_ID;
-                }
-                if (Pattern.matches("^/tasks/subtask/$", requestPath)) {
-                    return Endpoint.DELETE_ALL_SUBTASKS;
-                } else if (Pattern.matches("^/tasks/subtask/\\?id=\\d+$", requestPath)) {
-                    return Endpoint.DELETE_SUBTASK_BY_ID;
-                }
-                if (Pattern.matches("^/tasks/epic/\\?id=\\d+$", requestPath)) {
-                    return Endpoint.DELETE_EPIC_BY_ID;
-                }
-                if (Pattern.matches("^/tasks/subtask/epic/\\?id=\\d+$", requestPath)) {
-                    return Endpoint.DELETE_EPIC_SUBTASKS;
-                }
-                break;
-            }
-            default:
-                return Endpoint.UNKNOWN;
-        }
-        return Endpoint.UNKNOWN;
     }
 
     private void handlePrioritizedTasks(HttpExchange exchange) throws IOException {

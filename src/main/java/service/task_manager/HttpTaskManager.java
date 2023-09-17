@@ -55,7 +55,6 @@ public class HttpTaskManager extends FileBackedTasksManager {
             List<Task> tasks = gson.fromJson(jsonTasks, tasksType);
             if (!tasks.isEmpty()) {
                 for (Task task : tasks) {
-
                     manager.tasks.put(task.getId(), task);
                     manager.prioritizedTasks.add(task);
                 }

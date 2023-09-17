@@ -25,7 +25,7 @@ public class Tests {
 
 
         HttpTaskManager newManager = HttpTaskManager.loadFromKVServer(ManagersService.getDefaultHistory(), 8078);
-        System.out.println(newManager.getAllTasks());
+        System.out.println(newManager.getPrioritizedTasks());
     }
 }
 
