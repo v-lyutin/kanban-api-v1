@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Epic extends Task {
     private final List<SubTask> subTasks;
-    LocalDateTime endTime;
+    private LocalDateTime endTime;
 
     public Epic(String title, String description) {
         super(title, description);
