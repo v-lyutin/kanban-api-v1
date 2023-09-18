@@ -27,6 +27,7 @@ public enum Endpoint {
     UNKNOWN(Pattern.compile(""));
 
     private final Pattern endpoint;
+
     Endpoint(Pattern endpoint) {
         this.endpoint = endpoint;
     }
