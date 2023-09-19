@@ -7,6 +7,7 @@ import server.KVServer;
 import service.ManagersService;
 import service.task_manager.HttpTaskManager;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class Tests {
     public static void main(String[] args) throws IOException {
@@ -22,10 +23,9 @@ public class Tests {
         manager.createTask(task);
         manager.createTask(task1);
         manager.createSubTask(subTask1);
-
-
-        HttpTaskManager newManager = HttpTaskManager.loadFromKVServer(ManagersService.getDefaultHistory(), 8078);
-        System.out.println(newManager.getPrioritizedTasks());
+        task.setTitle("Updated task 1");
+        task.setStartTime(LocalDateTime.MIN);
+        manager.updateTask(task);
     }
 }
 

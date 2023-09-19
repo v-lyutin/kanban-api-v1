@@ -73,7 +73,7 @@ public class InMemoryTaskManager implements TaskManager {
         LocalDateTime endTime = task.getEndTime();
 
         boolean isThereAnIntersectionInTime = prioritizedTasks.stream()
-                .filter(t1 -> t1.getStartTime() != null)
+                .filter(t1 -> t1.getStartTime() != null && t1.getId() != task.getId())
                 .allMatch(t1 ->
                         startTime.isBefore(t1.getStartTime()) && endTime.isBefore(t1.getStartTime()) ||
                                 startTime.isAfter(t1.getEndTime()) && endTime.isAfter(t1.getEndTime()));
