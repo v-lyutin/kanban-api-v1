@@ -125,7 +125,6 @@ public class Task {
         } else {
             result += "}";
         }
-
         return result;
     }
 }
